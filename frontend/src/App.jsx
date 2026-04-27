@@ -12,9 +12,9 @@ const buildPathsMap = (data) => {
     const map = {};
     const root = data.title;
     map[root] = [root];
-    map[data.top.left.text]   = [data.top.left.text,   root];
+    map[data.top.left.text] = [data.top.left.text, root];
     map[data.top.center.text] = [data.top.center.text, root];
-    map[data.top.right.text]  = [data.top.right.text,  root];
+    map[data.top.right.text] = [data.top.right.text, root];
 
     data.spine.forEach(row => {
         [...row.left, ...row.right].forEach(n => {
@@ -42,14 +42,14 @@ const OrgNode = ({
     let cls = 'box';
     let avatarCls = 'avatar-square';
 
-    if (type === 'title')     cls += ' title-box';
-    if (type === 'alcalde')   cls += ' alcalde-box';
-    if (type === 'green')     cls += ' green-border';
+    if (type === 'title') cls += ' title-box';
+    if (type === 'alcalde') cls += ' alcalde-box';
+    if (type === 'green') cls += ' green-border';
     if (type === 'highlight') avatarCls += ' highlight-box-color';
-    if (isHighlighted)        cls += ' highlight';
-    if (isDimmed)             cls += ' dimmed';
-    if (hasChildren)          cls += ' has-children';
-    if (isPathActive)         cls += ' path-active';
+    if (isHighlighted) cls += ' highlight';
+    if (isDimmed) cls += ' dimmed';
+    if (hasChildren) cls += ' has-children';
+    if (isPathActive) cls += ' path-active';
 
     return (
         <div
@@ -92,8 +92,8 @@ const OrgNode = ({
 const NodeModal = ({ nodeText, onClose }) => {
     const description = nodeDescriptions[nodeText]
         || `${nodeText} es responsable de coordinar las funciones inherentes a su área dentro de la Municipalidad de Santa Cruz.`;
-    const director  = nodeDirectors[nodeText] || null;
-    const multiData  = nodeMembers[nodeText]  || null;
+    const director = nodeDirectors[nodeText] || null;
+    const multiData = nodeMembers[nodeText] || null;
 
     // Build initials from name (up to 2 letters)
     const initials = director?.name
@@ -200,7 +200,7 @@ const NodeModal = ({ nodeText, onClose }) => {
                             <div className="modal-divider" />
                             <div>
                                 <div className="modal-section-title" style={{ justifyContent: 'space-between' }}>
-                                    <span style={{ display:'flex', alignItems:'center', gap:6 }}>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                                         <Users size={13} /> Integrantes
                                     </span>
                                     <span className="member-count-badge">{multiData.members.length} miembros</span>
@@ -255,17 +255,17 @@ const NodeModal = ({ nodeText, onClose }) => {
 
 /* ─── Main App ─── */
 export default function App() {
-    const [searchQuery,    setSearchQuery]    = useState('');
-    const [showDropdown,   setShowDropdown]   = useState(false);
-    const [scale,          setScale]          = useState(0.4);
-    const [position,       setPosition]       = useState({ x: 0, y: 150 });
-    const [isDragging,     setIsDragging]     = useState(false);
-    const [nodeOffsets,     setNodeOffsets]    = useState({});
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showDropdown, setShowDropdown] = useState(false);
+    const [scale, setScale] = useState(0.69);
+    const [position, setPosition] = useState({ x: 0, y: -160 });
+    const [isDragging, setIsDragging] = useState(false);
+    const [nodeOffsets, setNodeOffsets] = useState({});
     const draggedNode = useRef(null);
     const nodeDragStartPos = useRef({ x: 0, y: 0 });
     const [collapsedNodes, setCollapsedNodes] = useState(new Set());
-    const [hoveredNode,    setHoveredNode]    = useState(null);
-    const [modalNode,      setModalNode]      = useState(null);
+    const [hoveredNode, setHoveredNode] = useState(null);
+    const [modalNode, setModalNode] = useState(null);
 
     /* Unified node state checker (Hover, Search, Offset) */
     const check = (text) => {
@@ -294,20 +294,20 @@ export default function App() {
         return { isHighlighted: highlight, isDimmed: dim, offset };
     };
 
-    const dragStart      = useRef({ x: 0, y: 0 });
-    const mouseDownPos   = useRef({ x: 0, y: 0 });  // to detect click vs drag
-    const wasDrag        = useRef(false);
-    const appRef         = useRef(null);
-    const scaleRef       = useRef(scale);
-    const positionRef    = useRef(position);
+    const dragStart = useRef({ x: 0, y: 0 });
+    const mouseDownPos = useRef({ x: 0, y: 0 });  // to detect click vs drag
+    const wasDrag = useRef(false);
+    const appRef = useRef(null);
+    const scaleRef = useRef(scale);
+    const positionRef = useRef(position);
 
     // Keep refs in sync for use inside closures
     useEffect(() => { scaleRef.current = scale; }, [scale]);
     useEffect(() => { positionRef.current = position; }, [position]);
 
     /* Active hover path */
-    const activePath     = hoveredNode ? (pathsMap[hoveredNode] || []) : [];
-    const isSpineActive  = hoveredNode
+    const activePath = hoveredNode ? (pathsMap[hoveredNode] || []) : [];
+    const isSpineActive = hoveredNode
         && activePath.includes(orgData.title)
         && hoveredNode !== orgData.title
         && hoveredNode !== orgData.top.left.text
@@ -359,22 +359,22 @@ export default function App() {
             if (!el) return;
 
             // Current screen centre of the element (accounts for any transform)
-            const r    = el.getBoundingClientRect();
-            const elCX = r.left + r.width  / 2;
-            const elCY = r.top  + r.height / 2;
+            const r = el.getBoundingClientRect();
+            const elCX = r.left + r.width / 2;
+            const elCY = r.top + r.height / 2;
 
-            const W      = window.innerWidth;
-            const H      = window.innerHeight;
+            const W = window.innerWidth;
+            const H = window.innerHeight;
             const HEADER = 72;
 
             // Visual centre of the canvas area below the header
             const vcX = W / 2;
             const vcY = HEADER + (H - HEADER) / 2;  // = (H + HEADER) / 2
 
-            const cs  = scaleRef.current;            // current scale
+            const cs = scaleRef.current;            // current scale
             const cpx = positionRef.current.x;       // current tx
             const cpy = positionRef.current.y;       // current ty
-            const ts  = 1.2;                         // target scale
+            const ts = 1.2;                         // target scale
             const r2s = ts / cs;                     // ratio
 
             // tx_new = (vcX - W/2) + (W/2 + cpx - elCX) * r2s  → first term = 0
@@ -405,8 +405,8 @@ export default function App() {
     const handleMouseDown = (e) => {
         if (e.target.closest('.controls-bar') || e.target.closest('.header-bar')
             || e.target.closest('.search-dropdown') || e.target.closest('.modal-overlay')) return;
-        
-        wasDrag.current   = false;
+
+        wasDrag.current = false;
         mouseDownPos.current = { x: e.clientX, y: e.clientY };
         dragStart.current = { x: e.clientX - positionRef.current.x, y: e.clientY - positionRef.current.y };
         setIsDragging(true);
@@ -416,9 +416,9 @@ export default function App() {
         wasDrag.current = false;
         draggedNode.current = text;
         const currentOffset = nodeOffsets[text] || { x: 0, y: 0 };
-        nodeDragStartPos.current = { 
-            x: e.clientX - currentOffset.x * scaleRef.current, 
-            y: e.clientY - currentOffset.y * scaleRef.current 
+        nodeDragStartPos.current = {
+            x: e.clientX - currentOffset.x * scaleRef.current,
+            y: e.clientY - currentOffset.y * scaleRef.current
         };
         mouseDownPos.current = { x: e.clientX, y: e.clientY };
     };
@@ -458,11 +458,11 @@ export default function App() {
         const el = appRef.current;
         el?.addEventListener('wheel', handleWheel, { passive: false });
         window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup',   handleMouseUp);
+        window.addEventListener('mouseup', handleMouseUp);
         return () => {
             el?.removeEventListener('wheel', handleWheel);
             window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('mouseup',   handleMouseUp);
+            window.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isDragging, position]);
 
@@ -542,7 +542,7 @@ export default function App() {
                         <OrgNode
                             text={orgData.top.left.text} type="green"
                             onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                            onNodeDragStart={handleNodeDragStart}
                             isPathActive={activePath.includes(orgData.top.left.text)}
                             {...check(orgData.top.left.text)}
                         />
@@ -550,7 +550,7 @@ export default function App() {
                         <OrgNode
                             text={orgData.top.center.text} type="alcalde"
                             onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                            onNodeDragStart={handleNodeDragStart}
                             isPathActive={activePath.includes(orgData.top.center.text)}
                             {...check(orgData.top.center.text)}
                         />
@@ -558,7 +558,7 @@ export default function App() {
                         <OrgNode
                             text={orgData.top.right.text}
                             onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                            onNodeDragStart={handleNodeDragStart}
                             isPathActive={activePath.includes(orgData.top.right.text)}
                             {...check(orgData.top.right.text)}
                         />
@@ -574,7 +574,7 @@ export default function App() {
                                 {/* Left branch */}
                                 <div className="branch left-branch">
                                     {row.left.map((node, i) => {
-                                        const hasC  = !!(node.bottom?.length);
+                                        const hasC = !!(node.bottom?.length);
                                         const isColl = collapsedNodes.has(node.text);
                                         const active = activePath.includes(node.text);
                                         return (
@@ -585,7 +585,7 @@ export default function App() {
                                                         hasChildren={hasC} isCollapsed={isColl}
                                                         onToggle={toggleCollapse}
                                                         onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                                                        onNodeDragStart={handleNodeDragStart}
                                                         isPathActive={active}
                                                         {...check(node.text)}
                                                     />
@@ -595,7 +595,7 @@ export default function App() {
                                                             <OrgNode
                                                                 text={b.text}
                                                                 onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                                                                onNodeDragStart={handleNodeDragStart}
                                                                 isPathActive={activePath.includes(b.text)}
                                                                 {...check(b.text)}
                                                             />
@@ -615,7 +615,7 @@ export default function App() {
                                 {/* Right branch */}
                                 <div className="branch right-branch">
                                     {row.right.map((node, i) => {
-                                        const hasC  = !!(node.bottom?.length);
+                                        const hasC = !!(node.bottom?.length);
                                         const isColl = collapsedNodes.has(node.text);
                                         const active = activePath.includes(node.text);
                                         return (
@@ -627,7 +627,7 @@ export default function App() {
                                                         hasChildren={hasC} isCollapsed={isColl}
                                                         onToggle={toggleCollapse}
                                                         onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                                                        onNodeDragStart={handleNodeDragStart}
                                                         isPathActive={active}
                                                         {...check(node.text)}
                                                     />
@@ -637,7 +637,7 @@ export default function App() {
                                                             <OrgNode
                                                                 text={b.text}
                                                                 onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                                                                onNodeDragStart={handleNodeDragStart}
                                                                 isPathActive={activePath.includes(b.text)}
                                                                 {...check(b.text)}
                                                             />
@@ -658,7 +658,7 @@ export default function App() {
                         <div className={`bottom-h-line${isBottomActive ? ' path-active' : ''}`} />
                         <div className="bottom-columns">
                             {orgData.bottomRow.map((col, ci) => {
-                                const hasC   = !!(col.children?.length);
+                                const hasC = !!(col.children?.length);
                                 const isColl = collapsedNodes.has(col.title);
                                 const active = activePath.includes(col.title);
                                 return (
@@ -669,7 +669,7 @@ export default function App() {
                                             hasChildren={hasC} isCollapsed={isColl}
                                             onToggle={toggleCollapse}
                                             onClickNode={handleNodeClick} onHover={setHoveredNode}
-                        onNodeDragStart={handleNodeDragStart}
+                                            onNodeDragStart={handleNodeDragStart}
                                             isPathActive={active}
                                             {...check(col.title)}
                                         />
@@ -704,7 +704,7 @@ export default function App() {
                 <button onClick={expandAll}><ChevronsDown size={15} /> Expandir</button>
                 <div className="controls-divider" />
                 <button onClick={() => setScale(s => Math.max(s / 1.2, 0.1))}><ZoomOut size={15} /></button>
-                <button onClick={() => { setScale(0.4); setPosition({ x: 0, y: 150 }); }}><Maximize size={15} /></button>
+                <button onClick={() => { setScale(1.3); setPosition({ x: 0, y: -130 }); }}><Maximize size={15} /></button>
                 <button onClick={() => setScale(s => Math.min(s * 1.2, 3))}><ZoomIn size={15} /></button>
             </div>
         </div>
