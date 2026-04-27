@@ -480,7 +480,7 @@ export default function App() {
             {/* ── HEADER ── */}
             <header className="header-bar">
                 <div className="logo-section">
-                    <img src={`${import.meta.env.BASE_URL}logo-muni.png`} alt="Muni Santa Cruz" className="logo-img" />
+                    <img src="logo-muni.png" alt="Muni Santa Cruz" className="logo-img" />
                     <div className="logo-text">
                         <span className="logo-title">Ilustre Municipalidad de Santa Cruz</span>
                         <span className="logo-subtitle">Portal de Transparencia Orgánica</span>
