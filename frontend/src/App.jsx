@@ -480,7 +480,7 @@ export default function App() {
             {/* ── HEADER ── */}
             <header className="header-bar">
                 <div className="logo-section">
-                    <div className="logo-icon"><Landmark size={22} /></div>
+                    <img src="./logo-muni.png" alt="Muni Santa Cruz" className="logo-img" />
                     <div className="logo-text">
                         <span className="logo-title">Ilustre Municipalidad de Santa Cruz</span>
                         <span className="logo-subtitle">Portal de Transparencia Orgánica</span>
@@ -706,8 +706,6 @@ export default function App() {
                 <button onClick={() => setScale(s => Math.max(s / 1.2, 0.1))}><ZoomOut size={15} /></button>
                 <button onClick={() => { setScale(0.4); setPosition({ x: 0, y: 150 }); }}><Maximize size={15} /></button>
                 <button onClick={() => setScale(s => Math.min(s * 1.2, 3))}><ZoomIn size={15} /></button>
-                <div className="controls-divider" />
-                <button onClick={() => setNodeOffsets({})} title="Restablecer posiciones de nodos"><Landmark size={15} /> Reset</button>
             </div>
         </div>
     );
