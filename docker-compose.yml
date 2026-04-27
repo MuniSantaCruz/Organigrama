@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  organigrama:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: organigrama_municipal
+    ports:
+      - "8080:80"
+    restart: always
