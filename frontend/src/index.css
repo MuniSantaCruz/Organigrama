@@ -825,3 +825,68 @@ body {
     background: var(--border);
     margin: 0 2px;
 }
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+@media (max-width: 640px) {
+    /* Header: mantiene 72px pero reubica los elementos */
+    .header-bar {
+        padding: 0 12px;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    .logo-section {
+        position: static;
+        flex-shrink: 0;
+    }
+    .logo-text {
+        display: none;
+    }
+    .logo-img {
+        height: 38px;
+    }
+    .search-container {
+        flex: 1;
+        width: auto;
+        max-width: none;
+    }
+    .search-input {
+        font-size: 13px;
+    }
+
+    /* Barra de controles: solo íconos */
+    .controls-bar {
+        bottom: 14px;
+        padding: 5px;
+        gap: 2px;
+    }
+    .controls-bar button {
+        padding: 8px;
+        font-size: 0;
+        gap: 0;
+    }
+    .controls-bar button svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Modal: ajuste de padding y radio */
+    .modal {
+        border-radius: 14px;
+        max-height: 90vh;
+    }
+    .modal-header-body {
+        padding: 14px 16px 12px;
+    }
+    .modal-body {
+        padding: 16px;
+        gap: 14px;
+    }
+    .modal-title {
+        font-size: 13px;
+    }
+    .director-card {
+        padding: 12px 14px;
+    }
+}

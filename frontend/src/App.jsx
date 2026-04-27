@@ -294,6 +294,8 @@ export default function App() {
         return { isHighlighted: highlight, isDimmed: dim, offset };
     };
 
+    const lastTouchDist = useRef(null);
+
     const dragStart = useRef({ x: 0, y: 0 });
     const mouseDownPos = useRef({ x: 0, y: 0 });  // to detect click vs drag
     const wasDrag = useRef(false);
@@ -465,6 +467,74 @@ export default function App() {
             window.removeEventListener('mouseup', handleMouseUp);
         };
     }, [isDragging, position]);
+
+    /* ── Mobile: initial scale ── */
+    useEffect(() => {
+        if (window.innerWidth < 640) {
+            setScale(0.28);
+            setPosition({ x: 0, y: -40 });
+        }
+    }, []);
+
+    /* ── Mobile: touch pan & pinch-to-zoom ── */
+    useEffect(() => {
+        const el = appRef.current;
+        if (!el) return;
+
+        const getTouchDist = (touches) => {
+            const dx = touches[0].clientX - touches[1].clientX;
+            const dy = touches[0].clientY - touches[1].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        };
+
+        const handleTouchStart = (e) => {
+            if (e.target.closest('.controls-bar') || e.target.closest('.header-bar')
+                || e.target.closest('.search-dropdown') || e.target.closest('.modal-overlay')) return;
+            if (e.target.closest('.box')) return;
+
+            wasDrag.current = false;
+            if (e.touches.length === 2) {
+                lastTouchDist.current = getTouchDist(e.touches);
+            } else if (e.touches.length === 1) {
+                const t = e.touches[0];
+                mouseDownPos.current = { x: t.clientX, y: t.clientY };
+                dragStart.current = { x: t.clientX - positionRef.current.x, y: t.clientY - positionRef.current.y };
+                setIsDragging(true);
+            }
+        };
+
+        const handleTouchMove = (e) => {
+            e.preventDefault();
+            if (e.touches.length === 2) {
+                const dist = getTouchDist(e.touches);
+                if (lastTouchDist.current !== null) {
+                    const ratio = dist / lastTouchDist.current;
+                    setScale(s => Math.min(Math.max(0.1, s * ratio), 3));
+                }
+                lastTouchDist.current = dist;
+            } else if (e.touches.length === 1 && isDragging) {
+                const t = e.touches[0];
+                const dx = t.clientX - mouseDownPos.current.x;
+                const dy = t.clientY - mouseDownPos.current.y;
+                if (Math.abs(dx) > 5 || Math.abs(dy) > 5) wasDrag.current = true;
+                setPosition({ x: t.clientX - dragStart.current.x, y: t.clientY - dragStart.current.y });
+            }
+        };
+
+        const handleTouchEnd = (e) => {
+            if (e.touches.length < 2) lastTouchDist.current = null;
+            if (e.touches.length === 0) setIsDragging(false);
+        };
+
+        el.addEventListener('touchstart', handleTouchStart, { passive: false });
+        el.addEventListener('touchmove', handleTouchMove, { passive: false });
+        el.addEventListener('touchend', handleTouchEnd);
+        return () => {
+            el.removeEventListener('touchstart', handleTouchStart);
+            el.removeEventListener('touchmove', handleTouchMove);
+            el.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [isDragging]);
 
     /* ── Render helpers ── */
     const lineV = (extra = '') => <div className={`v-line${extra}`} />;
@@ -704,7 +774,10 @@ export default function App() {
                 <button onClick={expandAll}><ChevronsDown size={15} /> Expandir</button>
                 <div className="controls-divider" />
                 <button onClick={() => setScale(s => Math.max(s / 1.2, 0.1))}><ZoomOut size={15} /></button>
-                <button onClick={() => { setScale(1.3); setPosition({ x: 0, y: -130 }); }}><Maximize size={15} /></button>
+                <button onClick={() => {
+                    if (window.innerWidth < 640) { setScale(0.28); setPosition({ x: 0, y: -40 }); }
+                    else { setScale(0.69); setPosition({ x: 0, y: -160 }); }
+                }}><Maximize size={15} /></button>
                 <button onClick={() => setScale(s => Math.min(s * 1.2, 3))}><ZoomIn size={15} /></button>
             </div>
         </div>
